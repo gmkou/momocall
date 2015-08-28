@@ -32,10 +32,20 @@ io.sockets.on('connection', function (socket) {
   console.log("connection");
 
   socket.on('message', function(msg) {
-    console.log('--------');
-    socket.emit('message', msg);
-    socket.broadcast.emit('message', msg);
+    console.log('message');
+//    socket.emit('message', msg);
+//    socket.broadcast.emit('message', msg);
   });
+
+  socket.on('start', function(msg) {
+    console.log('start');
+    socket.emit('message', {msg:'start'});
+  });
+
+  socket.on('bufferint', function(msg) {
+    console.log('buffering');
+  });
+
   socket.on('disconnect', function() {
     console.log('disconnect');
   });
