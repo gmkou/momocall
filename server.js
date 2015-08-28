@@ -3,6 +3,7 @@ var app = express()
   , http = require('http')
   , server = http.createServer(app)
   , io = require('socket.io').listen(server, {log:false, origins:'*:*'})
+var moment = require("moment");
 
 var PORT = 8888;
 server.listen(PORT);
@@ -31,13 +32,22 @@ io.sockets.on('connection', function (socket) {
   console.log(socket.id + ':connection');
 
   var status = ''
-  var count = 0;
   var intervalId = null;
+  var callJson = {};
+  var callListIndex = 0;
+  var delay = 20; // msec
+  var lastPaused = 0;
+  var start = 0;
 
-  var countFunc = function() {
+  var timerFunc = function() {
+    var callItem  = callJson.list[callListIndex];
+
     if (status == 'playing') {
-      count++;
-      socket.emit('event', {eventType:'message', eventAttr:count});
+      if (callItem != undefined && callItem.time < moment().format("x")-start) {
+        socket.emit('event', {eventType:'message', eventAttr:callItem.call });
+        callListIndex++;
+        callItem  = callJson.list[callListIndex];
+      }
     } 
   }
 
@@ -46,18 +56,20 @@ io.sockets.on('connection', function (socket) {
     status = command.commandType;
     switch (command.commandType) {
       case 'setVideoId' : videoId = command.commandAttr;
+        callJson = require('./data/' + videoId + '.json');
+        // console.log(callJson.list);
       break;
       case 'playing' :
-        intervalId = setInterval(countFunc,1000);
+        start = moment().format("x");
+        intervalId = setInterval(timerFunc,delay);
         break;
       case 'buffering' :
       case 'cued' :
       break;
       case 'ended' :
-        count = 0;
       case 'paused' :
         clearInterval(intervalId);
-        count = parseInt(command.commandAttr);
+        lastPaused = parseFloat(command.commandAttr);
       break;
       default:
       /* do nothing */
