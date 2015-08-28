@@ -27,7 +27,6 @@ function onYouTubePlayerAPIReady() {
       rels: '0',
       showinfo:'0'
     },
-//    videoId: '-rgEZe18Dv8',
     videoId: videoId,
     events: {
  //     'onReady': onPlayerReady,
