@@ -17,9 +17,9 @@ socket.on('connect', function() {
   console.log('connect');
 });
 
-socket.on('message', function(msg) {
+socket.on('event', function(msg) {
   console.log(msg);
-  $('#entrypoint').append($( msg.msg ));
+//  $('#entrypoint').append($( msg.msg ));
 });
 
 socket.on('disconnect', function(){
@@ -55,22 +55,23 @@ function onPlayerStateChange(event) {
   var state = event.target.getPlayerState();
   if(state == YT.PlayerState.ENDED) {
     console.log('ended');
+    socket.emit('command', {commandType:'ended', commandAttr:''});
   }
   else if(state == YT.PlayerState.PLAYING) {
     console.log('playing');
-    socket.emit('start');
+    socket.emit('command', {commandType:'playing', commandAttr:''});
   }
   else if(state == YT.PlayerState.PAUSED) {
     currentTime = player.getCurrentTime();
     console.log('paused:' + currentTime);
-    socket.emit('pause', {currentTime : currentTime });
+    socket.emit('command', {commandType:'paused', commandAttr:currentTime});
   }
   else if(state == YT.PlayerState.BUFFERING) {
     console.log('buffering');
-    socket.emit('buffering');
+    socket.emit('command', {commandType:'buffering', commandAttr:''});
   }
   else if(state == YT.PlayerState.CUED) {
-    console.log('cued'); 
+    socket.emit('command', {commandType:'cued', commandAttr:''});
   }
 }
 

@@ -29,25 +29,25 @@ require('./router.js')(app, controller);
 
 io.sockets.on('connection', function (socket) {
   gSocket = socket;
-  console.log("connection");
 
-  socket.on('message', function(msg) {
-    console.log('message');
-//    socket.emit('message', msg);
-//    socket.broadcast.emit('message', msg);
-  });
+  console.log(socket.id + ':connection');
 
-  socket.on('start', function(msg) {
-    console.log('start');
-    socket.emit('message', {msg:'start'});
-  });
+  socket.on('command', function(command) {
+    console.log(socket.id + ':<' + command.commandType + ':' + command.commandAttr);
 
-  socket.on('bufferint', function(msg) {
-    console.log('buffering');
+    switch (command.commandType) {
+      case 'playing' :
+      case 'buffering' :
+      case 'paused' :
+      case 'cued' :
+      case 'ended' :
+      default:
+      socket.emit('event', {eventType:command.commandType});
+    }
   });
 
   socket.on('disconnect', function() {
-    console.log('disconnect');
+    console.log(socket.id + ':disconnect');
   });
 });
 
