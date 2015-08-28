@@ -15,11 +15,14 @@ var socket = io.connect('http://localhost:8888');
 
 socket.on('connect', function() {
   console.log('connect');
+    socket.emit('command', {commandType:'setVideoId', commandAttr:videoId});
 });
 
 socket.on('event', function(event) {
   console.log(event);
-  $('#entrypoint').prepend(event.eventType);
+  if (event.eventType == 'message') {
+    $('#entrypoint').prepend(event.eventAttr);
+  }
 });
 
 socket.on('disconnect', function(){

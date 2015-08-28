@@ -6,7 +6,6 @@ var app = express()
 
 var PORT = 8888;
 server.listen(PORT);
-var gSocket = null;
 
 console.log("http://localhost:" + PORT);
 
@@ -27,28 +26,51 @@ controller.video = require('./controller/video.js');
 
 require('./router.js')(app, controller);
 
-io.sockets.on('connection', function (socket) {
-  gSocket = socket;
 
+io.sockets.on('connection', function (socket) {
   console.log(socket.id + ':connection');
+
+  var status = ''
+  var count = 0;
+  var intervalId = null;
+
+  var countFunc = function() {
+    if (status == 'playing') {
+      count++;
+      socket.emit('event', {eventType:'message', eventAttr:count});
+    } 
+  }
 
   socket.on('command', function(command) {
     console.log(socket.id + ':<' + command.commandType + ':' + command.commandAttr);
-
+    status = command.commandType;
     switch (command.commandType) {
+      case 'setVideoId' : videoId = command.commandAttr;
+      break;
       case 'playing' :
+        intervalId = setInterval(countFunc,1000);
+        break;
       case 'buffering' :
-      case 'paused' :
       case 'cued' :
+      break;
       case 'ended' :
+        count = 0;
+      case 'paused' :
+        clearInterval(intervalId);
+        count = parseInt(command.commandAttr);
+      break;
       default:
-      socket.emit('event', {eventType:command.commandType});
+      /* do nothing */
+      /* echo back
+         socket.emit('event', {eventType:command.commandType});
+       */
     }
   });
 
   socket.on('disconnect', function() {
     console.log(socket.id + ':disconnect');
   });
+
 });
 
 
