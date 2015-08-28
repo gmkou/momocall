@@ -19,7 +19,6 @@ socket.on('connect', function() {
 });
 
 socket.on('event', function(event) {
-  console.log(event);
   if (event.eventType == 'message') {
     $('#entrypoint').prepend('<div>' + event.eventAttr + '</div>');
   }
