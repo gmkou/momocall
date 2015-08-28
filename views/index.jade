@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    meta(charset='utf-8')
+    title= title
+  body
+    h1= title
+    p Welcome to #{title}
+      ul
+        - for item, index in list
+          li
+            a(href='/video/#{item.videoId}') #{item.videoTitle}
