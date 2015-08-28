@@ -17,9 +17,9 @@ socket.on('connect', function() {
   console.log('connect');
 });
 
-socket.on('event', function(msg) {
-  console.log(msg);
-//  $('#entrypoint').append($( msg.msg ));
+socket.on('event', function(event) {
+  console.log(event);
+  $('#entrypoint').prepend(event.eventType);
 });
 
 socket.on('disconnect', function(){
