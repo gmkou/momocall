@@ -11,4 +11,4 @@ run '$ npm install' to install node modules
 run server
 `$ node server.js`
 then open following url
-`http://localhost`
+`http://localhost:8888`
