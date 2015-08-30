@@ -58,18 +58,19 @@ io.sockets.on('connection', function (socket) {
       case 'setVideoId' : videoId = command.commandAttr;
         callJson = require('./data/' + videoId + '.json');
         // console.log(callJson.list);
-      break;
+        break;
       case 'playing' :
-        start = moment().format("x");
+        start = moment().format("x") - lastPaused;
+        console.log(start);
         intervalId = setInterval(timerFunc,delay);
         break;
       case 'buffering' :
       case 'cued' :
-      break;
+        break;
       case 'ended' :
       case 'paused' :
         clearInterval(intervalId);
-        lastPaused = parseFloat(command.commandAttr);
+        lastPaused = parseFloat(command.commandAttr) * 1000;
       break;
       default:
       /* do nothing */
