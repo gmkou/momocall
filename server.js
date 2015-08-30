@@ -60,8 +60,8 @@ io.sockets.on('connection', function (socket) {
         // console.log(callJson.list);
         break;
       case 'playing' :
+        lastPaused = parseFloat(command.commandAttr) * 1000;
         start = moment().format("x") - lastPaused;
-        console.log(start);
         intervalId = setInterval(timerFunc,delay);
         break;
       case 'buffering' :
