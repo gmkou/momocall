@@ -60,9 +60,9 @@ function onPlayerStateChange(event) {
     socket.emit('command', {commandType:'ended', commandAttr:''});
   }
   else if(state == YT.PlayerState.PLAYING) {
-    console.log('playing');
-    socket.emit('command', {commandType:'paused', commandAttr:player.getCurrentTime()});
-    socket.emit('command', {commandType:'playing', commandAttr:''});
+    currentTime = player.getCurrentTime();
+    console.log('playing:' + currentTime);
+    socket.emit('command', {commandType:'playing', commandAttr:currentTime});
   }
   else if(state == YT.PlayerState.PAUSED) {
     currentTime = player.getCurrentTime();
